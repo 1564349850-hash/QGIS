@@ -1,18 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- 确保在 GitHub Pages 子路径下相对资源能正确解析 -->
+    <!-- 适配 GitHub Pages 子路径的基础路径 -->
     <base href="./">
-    <link rel="stylesheet" href="./resources/ol.css">
+    <!-- 路径对应调整后的 resources 文件夹 -->
+    <link rel="stylesheet" href="resources/ol.css">
     <link rel="stylesheet" href="resources/fontawesome-all.min.css">
     <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
-    <link rel="stylesheet" href="./resources/qgis2web.css">
+    <link rel="stylesheet" href="resources/ol-layerswitcher.css">
+    <link rel="stylesheet" href="resources/qgis2web.css">
     <style>
         html, body {
             background-color: #ffffff;
@@ -221,12 +222,10 @@
         }
 
         /* ========== 核心修改1：彻底禁用面图层的悬停高亮（全场景覆盖） ========== */
-        /* 覆盖所有要素（含面）的悬停样式，强制继承原始样式 */
         .ol-feature,
         .ol-feature:hover,
         .ol-selectable,
         .ol-selectable:hover,
-        /* 针对面要素的特定样式覆盖 */
         .ol-layer-vector .ol-feature.ol-polygon,
         .ol-layer-vector .ol-feature.ol-polygon:hover {
             stroke: inherit !important;
@@ -234,12 +233,11 @@
             fill: inherit !important;
             fill-opacity: inherit !important;
             cursor: pointer !important;
-            /* 禁止任何默认高亮效果 */
             filter: none !important;
             opacity: inherit !important;
         }
 
-        /* ========== 新增：悬停提示弹窗样式（仅显示信息，无样式变化） ========== */
+        /* ========== 新增：悬停提示弹窗样式 ========== */
         #hover-tooltip {
             position: absolute;
             background: #f8f8f8;
@@ -248,13 +246,13 @@
             border-radius: 4px;
             font-size: 12px;
             color: #444;
-            pointer-events: none; /* 不阻挡鼠标事件 */
-            z-index: 1001; /* 高于其他面板 */
+            pointer-events: none;
+            z-index: 1001;
             display: none;
-            white-space: nowrap; /* 防止文字换行 */
+            white-space: nowrap;
         }
 
-        /* ========== 信息面板样式（保留你的原有布局） ========== */
+        /* ========== 信息面板样式 ========== */
         #title-panel {
             position: absolute;
             top: 15px;
@@ -340,9 +338,10 @@
             height: 100%;
             padding: 0;
             margin: 0;
+            position: relative;
         }
     </style>
-    <title>GIS要素搜索与距离测量</title>
+    <title>新疆维吾尔自治区路线图</title>
 </head>
 <body>
     <div id="map">
@@ -351,7 +350,6 @@
             <div id="popup-content"></div>
         </div>
 
-        <!-- 悬停提示弹窗 -->
         <div id="hover-tooltip"></div>
 
         <!-- 要素搜索 -->
@@ -383,45 +381,21 @@
         </div>
     </div>
 
+    <!-- 路径对应调整后的 resources 文件夹 -->
     <script src="resources/qgis2web_expressions.js"></script>
     <script src="resources/proj4.js"></script>
     <script>proj4.defs('EPSG:4326','+proj=longlat +datum=WGS84 +no_defs');</script>
-    <script src="./resources/functions.js"></script>
-    <script src="./resources/ol.js"></script>
-    <script src="./resources/ol-layerswitcher.js"></script>
+    <script src="resources/functions.js"></script>
+    <script src="resources/ol.js"></script>
+    <script src="resources/ol-layerswitcher.js"></script>
     <script src="resources/photon-geocoder-autocomplete.min.js"></script>
 
-    <!-- 在加载 layers/scripts 之前设定 scriptLocation，保证 GitHub Pages 子路径下能正确查找资源 -->
+    <!-- 配置 qgis2web 资源加载路径（适配 GitHub 仓库） -->
     <script>
-    // qgis2web 在运行时会使用 window.scriptLocation 作为资源前缀（若存在）
-    // 这里计算当前文档的相对路径并赋值，兼容 GitHub Pages 的 /<user>/<repo>/ 子路径托管
-    (function() {
-        try {
-            // 优先使用 document.currentScript（现代浏览器）
-            var script = document.currentScript;
-            if (!script) {
-                var scripts = document.getElementsByTagName('script');
-                script = scripts[scripts.length - 1];
-            }
-            var src = script && script.src ? script.src : '';
-            if (!src) {
-                // 没有 src 的内联脚本：使用页面路径
-                var path = window.location.pathname;
-                window.scriptLocation = path.substring(0, path.lastIndexOf('/') + 1);
-                return;
-            }
-            // 构造 URL，然后取 pathname 部分（保持以 / 开头、以 / 结尾）
-            var url = new URL(src, window.location.href);
-            var pathname = url.pathname;
-            window.scriptLocation = pathname.substring(0, pathname.lastIndexOf('/') + 1);
-        } catch (e) {
-            // 兜底：使用当前目录相对路径
-            window.scriptLocation = "./";
-        }
-    })();
+    window.scriptLocation = "./";
     </script>
 
-    <!-- 图层和样式脚本（保持原有） -->
+    <!-- 路径对应调整后的 layers 文件夹 -->
     <script src="layers/__2.js"></script>
     <script src="layers/__3.js"></script>
     <script src="layers/__4.js"></script>
@@ -452,6 +426,7 @@
     <script src="layers/_29.js"></script>
     <script src="layers/_30.js"></script>
     <script src="layers/_31.js"></script>
+    <!-- 路径对应调整后的 styles 文件夹 -->
     <script src="styles/__2_style.js"></script>
     <script src="styles/__3_style.js"></script>
     <script src="styles/__4_style.js"></script>
@@ -482,9 +457,9 @@
     <script src="styles/_29_style.js"></script>
     <script src="styles/_30_style.js"></script>
     <script src="styles/_31_style.js"></script>
-    <script src="./layers/layers.js" type="text/javascript"></script>
-    <script src="./resources/Autolinker.min.js"></script>
-    <script src="./resources/qgis2web.js"></script>
+    <script src="layers/layers.js" type="text/javascript"></script>
+    <script src="resources/Autolinker.min.js"></script>
+    <script src="resources/qgis2web.js"></script>
 
     <script>
         // 工具函数：节流
@@ -514,7 +489,7 @@
         window.addEventListener('load', function() {
         const map = window.map;
         if (!map) {
-        console.error('地图实例未找到！');
+        console.error('地图实例未找到！请检查 layers/styles 文件夹是否正确上传');
         return;
         }
 
@@ -541,7 +516,6 @@
         initFeatureCache();
 
         // 2. 单例图层/弹窗
-        // 高亮图层（仅搜索结果）
         const highlightLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
@@ -557,7 +531,6 @@
         });
         map.addLayer(highlightLayer);
 
-        // 测量图层
         const measureLineStyle = new ol.style.Style({
         stroke: new ol.style.Stroke({ color: '#0066ff', width: 2, lineDash: [5, 5] })
         });
@@ -578,7 +551,6 @@
         });
         map.addLayer(measureLayer);
 
-        // 点击弹窗
         const popup = document.getElementById('popup');
         const popupContent = document.getElementById('popup-content');
         const popupCloser = document.getElementById('popup-closer');
@@ -594,9 +566,8 @@
         popup.style.display = 'none';
         });
 
-        // ========== 核心修改2：悬停提示逻辑（仅显示信息，不改变面样式） ==========
+        // 3. 悬停提示逻辑
         const hoverTooltip = document.getElementById('hover-tooltip');
-        // 鼠标移动时检测面要素，显示提示
         map.on('pointermove', throttle(function(e) {
         if (measureActive) {
         hoverTooltip.style.display = 'none';
@@ -605,7 +576,6 @@
         }
 
         const pixel = map.getEventPixel(e.originalEvent);
-        // 仅检测面要素（Polygon/MultiPolygon）
         const feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         const geom = feature.getGeometry();
         return (layer instanceof ol.layer.Vector &&
@@ -614,7 +584,6 @@
         });
 
         if (feature) {
-        // 提取面要素的关键信息（示例：取第一个非几何属性）
         const properties = feature.getProperties();
         let tipText = `${feature.get('layerName')}：`;
         let firstProp = '无属性信息';
@@ -626,7 +595,6 @@
         }
         tipText += firstProp;
 
-        // 设置提示位置和内容
         hoverTooltip.innerHTML = tipText;
         hoverTooltip.style.left = `${e.originalEvent.clientX + 10}px`;
         hoverTooltip.style.top = `${e.originalEvent.clientY + 10}px`;
@@ -638,7 +606,7 @@
         }
         }, 50));
 
-        // 3. 要素搜索功能
+        // 4. 要素搜索功能
         const searchInput = document.getElementById('feature-search-input');
         const searchBtn = document.getElementById('feature-search-btn');
         const searchResults = document.getElementById('search-results');
@@ -692,14 +660,13 @@
         if (!container.contains(e.target) && !searchResults.contains(e.target)) searchResults.style.display = 'none';
         });
 
-        // 4. 距离测量功能（修复原错误）
+        // 5. 距离测量功能
         let measureActive = false;
         let measurePoints = [];
         const measureResultEl = document.getElementById('measure-result');
         function formatDistance(distance) {
         return distance >= 1000 ? (distance / 1000).toFixed(2) + ' 千米' : distance.toFixed(2) + ' 米';
         }
-        // 修复原错误的距离计算函数
         function calculateDistance(coords1, coords2) {
         const proj = map.getView().getProjection();
         const lonlat1 = ol.proj.transform(coords1, proj, 'EPSG:4326');
@@ -768,7 +735,7 @@
         measureSource.addFeatures(featuresToAdd);
         }, 30);
 
-        // 5. 全局事件绑定
+        // 6. 全局事件绑定
         map.on('click', function(e) {
         if (measureActive) {
         measurePoints.push(e.coordinate);
@@ -782,7 +749,7 @@
         let content = '<table style="width:100%; border-collapse: collapse;">';
         for (const [key, value] of Object.entries(properties)) {
         if (key !== 'geometry') {
-        content += `<tr style="border-bottom:1px solid #eee;"><th style="text-align:left; padding:4px; color:#444;">${key}</th><td style="padding:4px; color:#444;">${value || '-'}</td></tr>`;
+        content += `<tr style="border-bottom:1px solid #eee;"><<th style="text-align:left; padding:4px; color:#444;">${key}</</th><td style="padding:4px; color:#444;">${value || '-'}</td></tr>`;
         }
         }
         content += '</table>';
@@ -796,7 +763,7 @@
         document.getElementById('measure-distance-btn').addEventListener('click', () => measureActive ? stopMeasure() : startMeasure());
         document.getElementById('measure-clear-btn').addEventListener('click', clearMeasure);
 
-        // 6. 内存优化
+        // 7. 内存优化
         window.addEventListener('beforeunload', function() {
         highlightLayer.getSource().clear();
         measureSource.clear();
@@ -808,6 +775,4 @@
         });
     </script>
 </body>
-</html>
-
 </html>

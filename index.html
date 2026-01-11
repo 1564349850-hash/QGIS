@@ -6,6 +6,8 @@
     <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 确保在 GitHub Pages 子路径下相对资源能正确解析 -->
+    <base href="./">
     <link rel="stylesheet" href="./resources/ol.css">
     <link rel="stylesheet" href="resources/fontawesome-all.min.css">
     <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
@@ -388,6 +390,37 @@
     <script src="./resources/ol.js"></script>
     <script src="./resources/ol-layerswitcher.js"></script>
     <script src="resources/photon-geocoder-autocomplete.min.js"></script>
+
+    <!-- 在加载 layers/scripts 之前设定 scriptLocation，保证 GitHub Pages 子路径下能正确查找资源 -->
+    <script>
+    // qgis2web 在运行时会使用 window.scriptLocation 作为资源前缀（若存在）
+    // 这里计算当前文档的相对路径并赋值，兼容 GitHub Pages 的 /<user>/<repo>/ 子路径托管
+    (function() {
+        try {
+            // 优先使用 document.currentScript（现代浏览器）
+            var script = document.currentScript;
+            if (!script) {
+                var scripts = document.getElementsByTagName('script');
+                script = scripts[scripts.length - 1];
+            }
+            var src = script && script.src ? script.src : '';
+            if (!src) {
+                // 没有 src 的内联脚本：使用页面路径
+                var path = window.location.pathname;
+                window.scriptLocation = path.substring(0, path.lastIndexOf('/') + 1);
+                return;
+            }
+            // 构造 URL，然后取 pathname 部分（保持以 / 开头、以 / 结尾）
+            var url = new URL(src, window.location.href);
+            var pathname = url.pathname;
+            window.scriptLocation = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+        } catch (e) {
+            // 兜底：使用当前目录相对路径
+            window.scriptLocation = "./";
+        }
+    })();
+    </script>
+
     <!-- 图层和样式脚本（保持原有） -->
     <script src="layers/__2.js"></script>
     <script src="layers/__3.js"></script>
@@ -749,7 +782,7 @@
         let content = '<table style="width:100%; border-collapse: collapse;">';
         for (const [key, value] of Object.entries(properties)) {
         if (key !== 'geometry') {
-        content += `<tr style="border-bottom:1px solid #eee;"><<th style="text-align:left; padding:4px; color:#444;">${key}</</th><td style="padding:4px; color:#444;">${value || '-'}</td></tr>`;
+        content += `<tr style="border-bottom:1px solid #eee;"><th style="text-align:left; padding:4px; color:#444;">${key}</th><td style="padding:4px; color:#444;">${value || '-'}</td></tr>`;
         }
         }
         content += '</table>';
@@ -775,4 +808,6 @@
         });
     </script>
 </body>
+</html>
+
 </html>

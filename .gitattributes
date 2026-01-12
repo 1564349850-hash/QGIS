@@ -1,9 +1,10 @@
-layers/_*.js diff
+layers/_*.js text=auto diff
 resources/*.png binary
 resources/_*.js diff
 resources/*.css text=auto diff
 resources/*.map text=auto diff
 resources/fonts/*.ttf binary
 resources/fonts/*.woff2 binary
-styles/_*.js diff
+# 针对layers目录下_开头的JS文件，默认渲染diff
+styles/_*.js text=auto diff
 styles/legend/*.png binary
